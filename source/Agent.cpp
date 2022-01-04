@@ -29,7 +29,8 @@ std::ostream& operator<<(std::ostream& os, const Solution& solution)
 
 Agent::Agent(Solution solution,  int widthControlPointsCount, int heightControlPointsCount)
 	: solution{solution}, widthControlPointsCount{widthControlPointsCount},
-	  heightControlPointsCount{heightControlPointsCount}, personalBest{solution.center} {}
+	  heightControlPointsCount{heightControlPointsCount}, personalBest{solution.center},
+	  personalBestWidth{solution.width}, personalBestHeight{solution.height} {}
 
 double Agent::calculateAccuracy(const ValidationGrid& validationGrid, double tolerance)
 {
@@ -56,6 +57,8 @@ double Agent::calculateAccuracy(const ValidationGrid& validationGrid, double tol
 	{
 		bestAccuracy = lastAccuracy;
 		personalBest = solution.center;
+		personalBestWidth = solution.width;
+		personalBestHeight = solution.height;
 	}
 
 	return double(correctCount) / double(pointsCount);
@@ -98,12 +101,22 @@ void Agent::randomize(const Bounds& bounds, GeneratorHelper& generatorHelper, in
 }
 
 void Agent::update(GeneratorHelper& generatorHelper, Mandelbrot::Complex globalBest, double inertia, double cognitive,
-	double social)
+	double social, double globalBestWidth, double globalBestHeight)
 {
 	velocity = inertia * velocity
 		+ generatorHelper.randomDoubleBetween(0.0, 1.0) * cognitive * (personalBest - solution.center)
-		+ generatorHelper.randomDoubleBetween(0.0, 1.0) * social*(globalBest - solution.center);
+		+ generatorHelper.randomDoubleBetween(0.0, 1.0) * social * (globalBest - solution.center);
 	solution.center += velocity;
+
+	widthVelocity = inertia * widthVelocity
+		+ generatorHelper.randomDoubleBetween(0.0, 1.0) * cognitive * (personalBestWidth - solution.width)
+		+ generatorHelper.randomDoubleBetween(0.0, 1.0) * social * (globalBestWidth - solution.width);
+	solution.width += widthVelocity;
+
+	heightVelocity = inertia * heightVelocity
+		+ generatorHelper.randomDoubleBetween(0.0, 1.0) * cognitive * (personalBestHeight - solution.height)
+		+ generatorHelper.randomDoubleBetween(0.0, 1.0) * social * (globalBestHeight - solution.height);
+	solution.height += heightVelocity;
 }
 
 const Solution& Agent::getSolution() const

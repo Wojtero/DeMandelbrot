@@ -28,7 +28,7 @@ class Swarm
 	void compute(std::chrono::time_point<std::chrono::steady_clock> startTime, int maxMilis = 9500);
 
 	[[nodiscard]]
-	std::tuple<Mandelbrot::Complex, double> findBest() const;
+	std::tuple<Mandelbrot::Complex, double, double, double> findBest() const;
 
 	[[nodiscard]]
 	const std::vector<Agent>& getAgents() const;
@@ -55,6 +55,10 @@ class Swarm
 	double cognitive = 0.5;
 
 	double social = 0.5;
+
+	double globalBestWidth {};
+
+	double globalBestHeight {};
 
 	void initializeGlobalBest();
 

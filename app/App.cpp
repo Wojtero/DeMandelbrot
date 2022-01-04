@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 	auto image = loadImage(file->string());
 	PixelMatrix pixelMatrix (image);
 
-	Swarm swarm {700, 10, 10, pixelMatrix};
+	Swarm swarm {60, 40, 40, pixelMatrix};
 	swarm.compute(timeStart);
 
 	auto timeEnd = std::chrono::high_resolution_clock::now();

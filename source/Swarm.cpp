@@ -34,16 +34,19 @@ void Swarm::update()
 	std::for_each(std::execution::par, std::begin(agents), std::end(agents), [&](Agent& agent)
 	{
 		GeneratorHelper generatorHelper {};
-		agent.update(generatorHelper, globalBest, inertia, cognitive, social);
+		agent.update(generatorHelper, globalBest, inertia, cognitive, social,
+			globalBestWidth, globalBestHeight);
 	});
 
 	validateAgents();
-	const auto [bestPosition, newBestAccuracy] = findBest();
+	const auto [bestPosition, newBestAccuracy, newBestWidth, newBestHeight] = findBest();
 
 	if (newBestAccuracy > bestAccuracy)
 	{
 		globalBest = bestPosition;
 		bestAccuracy = newBestAccuracy;
+		globalBestWidth = newBestWidth;
+		globalBestHeight = newBestHeight;
 	}
 }
 
@@ -110,10 +113,12 @@ void Swarm::initializeGlobalBest()
 	sortAgentsBestToWorst();
 	globalBest = agents.begin()->getSolution().center;
 	bestAccuracy = agents.begin()->getLastAccuracy();
+	globalBestWidth = agents.begin()->getSolution().width;
+	globalBestHeight = agents.begin()->getSolution().height;
 	isGlobalBestInitialized = true;
 }
 
-std::tuple<Mandelbrot::Complex, double> Swarm::findBest() const
+std::tuple<Mandelbrot::Complex, double, double, double> Swarm::findBest() const
 {
 	auto best = std::max_element(std::execution::par, std::begin(agents), std::end(agents),
 		[](const Agent& largest, const Agent& next)
@@ -121,7 +126,7 @@ std::tuple<Mandelbrot::Complex, double> Swarm::findBest() const
 		return next.getLastAccuracy() > largest.getLastAccuracy();
 	});
 
-	return {best->getSolution().center, best->getLastAccuracy()};
+	return {best->getSolution().center, best->getLastAccuracy(), best->getSolution().width, best->getSolution().height};
 }
 
 void Swarm::compute(std::chrono::time_point<std::chrono::high_resolution_clock> startTime, int maxMilis)

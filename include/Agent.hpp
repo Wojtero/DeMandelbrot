@@ -28,15 +28,15 @@ class Agent
 
 	Agent(Solution solution, int widthControlPointsCount, int heightControlPointsCount);
 
-	double calculateAccuracy(const ValidationGrid& validationGrid, double tolerance = 0.05);
+	double calculateAccuracy(const ValidationGrid& validationGrid, double tolerance = 0.01);
 
 	[[nodiscard]]
 	double getLastAccuracy() const;
 
 	void update(GeneratorHelper& generatorHelper, Mandelbrot::Complex globalBest, double inertia, double cognitive,
-		double social);
+		double social, double globalBestWidth, double globalBestHeight);
 
-	void randomize(const Bounds& bounds, GeneratorHelper& generatorHelper, int maxDivisor = 100);
+	void randomize(const Bounds& bounds, GeneratorHelper& generatorHelper, int maxDivisor = 10);
 
 	[[nodiscard]]
 	const Solution& getSolution() const;
@@ -61,7 +61,11 @@ class Agent
 
 	double widthVelocity {};
 
+	double personalBestWidth {};
+
 	double heightVelocity {};
+
+	double personalBestHeight {};
 
 	[[nodiscard]]
 	std::vector<Mandelbrot::Complex> createGrid() const;
