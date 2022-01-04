@@ -67,7 +67,8 @@ namespace Mandelbrot
 
 	ImageIO::Byte createMandelbrotPixel(Complex complex, const int maxIterations)
 	{
-		return ImageIO::Byte(255) - ImageIO::Byte((float(calculateMandelbrotIterations(complex, maxIterations))
-			/ float(maxIterations)) * 255.f);
+		return std::numeric_limits<ImageIO::Byte>::max()
+			- (ImageIO::Byte((float(calculateMandelbrotIterations(complex, maxIterations))
+			/ float(maxIterations)) * 255.f));
 	}
 }

@@ -5,6 +5,7 @@
 #include "ImageIO/ImageIOTypes.hpp"
 #include "ImageIO/PixelMatrix.hpp"
 #include "SwarmTypes.hpp"
+#include "GlobalParameters.hpp"
 
 class Swarm
 {
@@ -25,7 +26,7 @@ class Swarm
 
 	void print();
 
-	void compute(std::chrono::time_point<std::chrono::steady_clock> startTime, int maxMilis = 9500);
+	void compute(std::chrono::time_point<std::chrono::steady_clock> startTime, int maxMilis = MAX_MILIS);
 
 	[[nodiscard]]
 	std::tuple<Mandelbrot::Complex, double, double, double> findBest() const;
@@ -50,15 +51,24 @@ class Swarm
 
 	bool isGlobalBestInitialized {};
 
-	double inertia = 0.7;
+	double inertia = INERTIA;
 
-	double cognitive = 0.5;
+	double cognitive = COGNITIVE;
 
-	double social = 0.5;
+	double social = SOCIAL;
 
 	double globalBestWidth {};
 
 	double globalBestHeight {};
+
+	bool optimizeLoop = OPTIMIZE_LOOP;
+
+	std::vector<std::pair<int, double>> iterationTiers =
+	{
+		{5, 0.8},
+		{10, 0.6},
+		{20, 0.4}
+	};
 
 	void initializeGlobalBest();
 

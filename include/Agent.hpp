@@ -5,6 +5,7 @@
 #include "Mandelbrot.hpp"
 #include "SwarmTypes.hpp"
 #include "GeneratorHelper.hpp"
+#include "GlobalParameters.hpp"
 
 struct Solution
 {
@@ -28,7 +29,7 @@ class Agent
 
 	Agent(Solution solution, int widthControlPointsCount, int heightControlPointsCount);
 
-	double calculateAccuracy(const ValidationGrid& validationGrid, double tolerance = 0.01);
+	double calculateAccuracy(const ValidationGrid& validationGrid, double tolerance = TOLERANCE);
 
 	[[nodiscard]]
 	double getLastAccuracy() const;
@@ -36,7 +37,7 @@ class Agent
 	void update(GeneratorHelper& generatorHelper, Mandelbrot::Complex globalBest, double inertia, double cognitive,
 		double social, double globalBestWidth, double globalBestHeight);
 
-	void randomize(const Bounds& bounds, GeneratorHelper& generatorHelper, int maxDivisor = 10);
+	void randomize(const Bounds& bounds, GeneratorHelper& generatorHelper, int maxDivisor = MAX_DIVISOR);
 
 	[[nodiscard]]
 	const Solution& getSolution() const;

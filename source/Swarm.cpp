@@ -131,10 +131,25 @@ std::tuple<Mandelbrot::Complex, double, double, double> Swarm::findBest() const
 
 void Swarm::compute(std::chrono::time_point<std::chrono::high_resolution_clock> startTime, int maxMilis)
 {
+	int iterationBatch = 0;
+	int iterationCount = 0;
+	const int iterationTiersCount = static_cast<int>(iterationTiers.size());
+
 	while(static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>
 	    (std::chrono::high_resolution_clock::now() - startTime).count()) < maxMilis)
 	{
 		update();
+
+		if (optimizeLoop)
+		{
+			if (iterationBatch < iterationTiersCount && iterationCount > iterationTiers.at(iterationBatch).first)
+			{
+				sortAgentsBestToWorst();
+				agents.resize(std::size_t(agents.size() * iterationTiers.at(iterationBatch).second));
+				++iterationBatch;
+			}
+			++iterationCount;
+		}
 	}
 	sortAgentsBestToWorst();
 }

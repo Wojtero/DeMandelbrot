@@ -19,6 +19,6 @@ add_executable(DeMandelbrot
         source/Swarm.cpp include/Swarm.hpp
         source/Agent.cpp include/Agent.hpp
         include/SwarmTypes.hpp
-        include/GeneratorHelper.hpp source/GeneratorHelper.cpp)
+        include/GeneratorHelper.hpp source/GeneratorHelper.cpp include/GlobalParameters.hpp)
 
 target_include_directories(DeMandelbrot PUBLIC ${INCLUDE_DIRS})

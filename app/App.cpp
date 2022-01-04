@@ -3,6 +3,7 @@
 #include "Mandelbrot.hpp"
 #include "ImageIO.hpp"
 #include "Swarm.hpp"
+#include "GlobalParameters.hpp"
 
 #define DEVELOPMENT
 
@@ -24,7 +25,8 @@ int main(int argc, char* argv[])
 	auto image = loadImage(file->string());
 	PixelMatrix pixelMatrix (image);
 
-	Swarm swarm {60, 40, 40, pixelMatrix};
+	Swarm swarm {AGENT_COUNT, WIDTH_CONTROL_POINTS_COUNT,
+		HEIGHT_CONTROL_POINTS_COUNT, pixelMatrix};
 	swarm.compute(timeStart);
 
 	auto timeEnd = std::chrono::high_resolution_clock::now();
