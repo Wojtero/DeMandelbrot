@@ -1,0 +1,2 @@
+# DeMandelbrot
+Project for Hackathon.
