@@ -38,8 +38,13 @@ void Swarm::update()
 	});
 
 	validateAgents();
-	sortAgentsBestToWorst();
-	globalBest = agents.front().getSolution().center;
+	const auto [bestPosition, newBestAccuracy] = findBest();
+
+	if (newBestAccuracy > bestAccuracy)
+	{
+		globalBest = bestPosition;
+		bestAccuracy = newBestAccuracy;
+	}
 }
 
 void Swarm::initializeValidationGrid(const ImageIO::PixelMatrix& pixelMatrix)
@@ -104,5 +109,27 @@ void Swarm::initializeGlobalBest()
 	validateAgents();
 	sortAgentsBestToWorst();
 	globalBest = agents.begin()->getSolution().center;
+	bestAccuracy = agents.begin()->getLastAccuracy();
 	isGlobalBestInitialized = true;
+}
+
+std::tuple<Mandelbrot::Complex, double> Swarm::findBest() const
+{
+	auto best = std::max_element(std::execution::par, std::begin(agents), std::end(agents),
+		[](const Agent& largest, const Agent& next)
+	{
+		return next.getLastAccuracy() > largest.getLastAccuracy();
+	});
+
+	return {best->getSolution().center, best->getLastAccuracy()};
+}
+
+void Swarm::compute(std::chrono::time_point<std::chrono::high_resolution_clock> startTime, int maxMilis)
+{
+	while(static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>
+	    (std::chrono::high_resolution_clock::now() - startTime).count()) < maxMilis)
+	{
+		update();
+	}
+	sortAgentsBestToWorst();
 }

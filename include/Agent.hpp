@@ -59,6 +59,10 @@ class Agent
 
 	Mandelbrot::Complex personalBest {};
 
+	double widthVelocity {};
+
+	double heightVelocity {};
+
 	[[nodiscard]]
 	std::vector<Mandelbrot::Complex> createGrid() const;
 };

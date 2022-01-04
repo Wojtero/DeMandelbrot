@@ -61,10 +61,10 @@ namespace ImageIO
 	void printSolution(const Solution& solution, int time)
 	{
 		std::cout << std::setprecision(5);
-		std::cout << solution.reMin() << '\n';
-		std::cout << solution.reMax() << '\n';
-		std::cout << solution.imMin() << '\n';
-		std::cout << solution.imMax() << '\n';
+		std::cout << "ReMin: " << solution.reMin() << '\n';
+		std::cout << "ImMin: " << solution.imMin() << '\n';
+		std::cout << "ReMax: " << solution.reMax() << '\n';
+		std::cout << "ImMax: " << solution.imMax() << '\n';
 		std::cout << time;
 	}
 

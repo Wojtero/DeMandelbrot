@@ -24,15 +24,15 @@ int main(int argc, char* argv[])
 	auto image = loadImage(file->string());
 	PixelMatrix pixelMatrix (image);
 
-	Swarm swarm {100, 5, 5, pixelMatrix};
-	for (int i = 0; i < 100; ++i) { swarm.update(); }
-	swarm.print();
+	Swarm swarm {700, 10, 10, pixelMatrix};
+	swarm.compute(timeStart);
 
 	auto timeEnd = std::chrono::high_resolution_clock::now();
 	auto time = static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>
 	    (timeEnd - timeStart).count());
 	const auto& solution = swarm.getAgents().front().getSolution();
 
+	swarm.print();
 	printSolution(solution, time);
 	saveText(filenameNoExtension(file) + ".txt", solution, time);
 	saveMandelbrot("../output/" + filenameNoExtension(file) + ".png",

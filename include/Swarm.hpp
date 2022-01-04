@@ -25,6 +25,11 @@ class Swarm
 
 	void print();
 
+	void compute(std::chrono::time_point<std::chrono::steady_clock> startTime, int maxMilis = 9500);
+
+	[[nodiscard]]
+	std::tuple<Mandelbrot::Complex, double> findBest() const;
+
 	[[nodiscard]]
 	const std::vector<Agent>& getAgents() const;
 
@@ -40,6 +45,8 @@ class Swarm
 	ValidationGrid validationGrid {};
 
 	Mandelbrot::Complex globalBest {};
+
+	double bestAccuracy {};
 
 	bool isGlobalBestInitialized {};
 
