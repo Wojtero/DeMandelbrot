@@ -13,10 +13,10 @@ namespace ImageIO
 	{
 	  public:
 
-		auto parseInput(int argc, char* argv[]) const -> std::optional<std::vector<std::filesystem::path>>;
+		auto parseInput(int argc, char* argv[]) const -> std::optional<std::filesystem::path>;
 
 	  private:
 
-		int expectedArgumentCount = 3;
+		int expectedArgumentCount = 2;
 	};
 }

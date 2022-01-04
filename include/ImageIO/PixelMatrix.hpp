@@ -14,6 +14,7 @@ namespace ImageIO
 	  public:
 
 		PixelMatrix() = delete;
+
 		PixelMatrix(int width, int height);
 
 		explicit PixelMatrix(const Image& image);

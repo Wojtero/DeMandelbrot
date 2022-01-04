@@ -2,8 +2,11 @@
 
 #include <cassert>
 #include <iostream>
+#include <fstream>
 #include <execution>
+#include <iomanip>
 #include "Mandelbrot.hpp"
+#include "Agent.hpp"
 
 namespace ImageIO
 {
@@ -53,5 +56,31 @@ namespace ImageIO
 	{
 		auto mandelbrot = Mandelbrot::createMandelbrotImage(reMin, imMin, reMax, imMax);
 		saveImage(mandelbrot.toImage(), pathToImage);
+	}
+
+	void printSolution(const Solution& solution, int time)
+	{
+		std::cout << std::setprecision(5);
+		std::cout << solution.reMin() << '\n';
+		std::cout << solution.reMax() << '\n';
+		std::cout << solution.imMin() << '\n';
+		std::cout << solution.imMax() << '\n';
+		std::cout << time;
+	}
+
+	void saveText(std::string_view pathToText, const Solution& solution, int time)
+	{
+		std::ofstream fileStream {pathToText};
+		fileStream << std::setprecision(5);
+		fileStream << solution.reMin() << '\n';
+		fileStream << solution.reMax() << '\n';
+		fileStream << solution.imMin() << '\n';
+		fileStream << solution.imMax() << '\n';
+		fileStream << time;
+	}
+
+	std::string filenameNoExtension(std::optional<std::filesystem::path> file)
+	{
+		return file->filename().string().substr(0, file->filename().string().find_last_of("."));
 	}
 }

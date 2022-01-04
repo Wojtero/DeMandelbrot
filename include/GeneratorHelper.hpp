@@ -7,12 +7,17 @@
 #include <set>
 #include <cassert>
 #include <filesystem>
+
 class GeneratorHelper
 {
   public:
+
 	auto randomNumbers(int length) -> std::string;
+
 	auto randomBool() -> bool;
+
 	auto randomDoubleBetween(double minInclusive, double maxExclusive) -> double;
+
 	inline auto randomIntBetween(int minInclusive, int maxInclusive) -> int;
 
 	template<typename T>
@@ -30,5 +35,6 @@ class GeneratorHelper
 	}
 
   private:
+
 	std::default_random_engine randomEngine {std::random_device{}()};
 };
