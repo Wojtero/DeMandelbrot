@@ -1,7 +1,8 @@
 #pragma once
 
 #include <complex>
-#include <ImageIO/PixelMatrix.hpp>
+#include "ImageIO/PixelMatrix.hpp"
+#include "GlobalParameters.hpp"
 
 namespace Mandelbrot
 {
@@ -18,9 +19,9 @@ namespace Mandelbrot
 		};
 	}
 
-	int calculateMandelbrotIterations(Complex complex, int maxIterations = 255);
+	int calculateMandelbrotIterations(Complex complex, int maxIterations);
 
 	ImageIO::PixelMatrix createMandelbrotImage(double reMin, double imMin, double reMax, double imMax);
 
-	ImageIO::Byte createMandelbrotPixel(Complex complex, int maxIterations = 100);
+	ImageIO::Byte createMandelbrotPixel(Complex complex, int maxIterations);
 }

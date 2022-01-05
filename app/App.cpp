@@ -1,8 +1,8 @@
 #include <iostream>
 #include <chrono>
-#include "Mandelbrot.hpp"
+#include "Mandelbrot/Mandelbrot.hpp"
 #include "ImageIO.hpp"
-#include "Swarm.hpp"
+#include "Swarm/Swarm.hpp"
 #include "GlobalParameters.hpp"
 
 #define DEVELOPMENT
@@ -32,13 +32,16 @@ int main(int argc, char* argv[])
 	auto timeEnd = std::chrono::high_resolution_clock::now();
 	auto time = static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>
 	    (timeEnd - timeStart).count());
-	const auto& solution = swarm.getAgents().front().getSolution();
+	const auto& solution = swarm.getBestAgent().getSolution();
 
+#ifdef DEVELOPMENT
 	swarm.print();
 	printSolution(solution, time);
-	saveText(filenameNoExtension(file) + ".txt", solution, time);
 	saveMandelbrot("../output/" + filenameNoExtension(file) + ".png",
-		solution.reMin(), solution.imMin(), solution.reMax(), solution.imMax());
+		{solution.reMin(), solution.imMin(), solution.reMax(), solution.imMax()});
+#endif
+
+	saveText(filenameNoExtension(file) + ".txt", solution, time);
 
 	return 0;
 }

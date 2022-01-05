@@ -10,15 +10,16 @@ set(INCLUDE_DIRS
 
 add_executable(DeMandelbrot
         app/App.cpp
-        source/Mandelbrot.cpp include/Mandelbrot.hpp
+        source/Mandelbrot/Mandelbrot.cpp include/Mandelbrot/Mandelbrot.hpp
         source/ImageIO/PixelMatrix.cpp include/ImageIO/PixelMatrix.hpp
         source/ImageIO/InputParser.cpp include/ImageIO/InputParser.hpp
         include/ImageIO/ImageIOTypes.hpp
         include/ImageIO.hpp
         source/ImageIO/Utility.cpp include/ImageIO/Utility.hpp
-        source/Swarm.cpp include/Swarm.hpp
-        source/Agent.cpp include/Agent.hpp
-        include/SwarmTypes.hpp
-        include/GeneratorHelper.hpp source/GeneratorHelper.cpp include/GlobalParameters.hpp)
+        source/Swarm/Swarm.cpp include/Swarm/Swarm.hpp
+        source/Swarm/Agent.cpp include/Swarm/Agent.hpp
+        include/Swarm/SwarmTypes.hpp
+        source/Swarm/GeneratorHelper.cpp include/Swarm/GeneratorHelper.hpp
+        include/GlobalParameters.hpp)
 
 target_include_directories(DeMandelbrot PUBLIC ${INCLUDE_DIRS})

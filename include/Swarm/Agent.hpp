@@ -2,25 +2,39 @@
 
 #include <vector>
 #include <ostream>
-#include "Mandelbrot.hpp"
+#include "Mandelbrot/Mandelbrot.hpp"
 #include "SwarmTypes.hpp"
 #include "GeneratorHelper.hpp"
 #include "GlobalParameters.hpp"
 
+/** Result of algorithm. */
 struct Solution
 {
 	Mandelbrot::Complex center {};
+
 	double width {};
+
 	double height {};
 
-	[[nodiscard]] double reMin() const;
-	[[nodiscard]] double imMin() const;
-	[[nodiscard]] double reMax() const;
-	[[nodiscard]] double imMax() const;
+	[[nodiscard]]
+	double reMin() const;
+
+	[[nodiscard]]
+	double imMin() const;
+
+	[[nodiscard]]
+	double reMax() const;
+
+	[[nodiscard]]
+	double imMax() const;
+
+	[[nodiscard]]
+	std::string stringSolution() const;
 
 	friend std::ostream& operator<<(std::ostream& os, const Solution& solution);
 };
 
+/** Agent that holds solution and moves as a result of PSO. */
 class Agent
 {
   public:
@@ -35,12 +49,15 @@ class Agent
 	double getLastAccuracy() const;
 
 	void update(GeneratorHelper& generatorHelper, Mandelbrot::Complex globalBest, double inertia, double cognitive,
-		double social, double globalBestWidth, double globalBestHeight);
+		double social, double globalBestWidth, double globalBestHeight, const ValidationGrid& validationGrid);
 
 	void randomize(const Bounds& bounds, GeneratorHelper& generatorHelper, int maxDivisor = MAX_DIVISOR);
 
 	[[nodiscard]]
 	const Solution& getSolution() const;
+
+	[[nodiscard]]
+	std::string stringAgent() const;
 
 	friend std::ostream& operator<<(std::ostream& os, const Agent& agent);
 
@@ -58,7 +75,7 @@ class Agent
 
 	Mandelbrot::Complex velocity {};
 
-	Mandelbrot::Complex personalBest {};
+	Mandelbrot::Complex personalBestPosition {};
 
 	double widthVelocity {};
 

@@ -1,12 +1,13 @@
 #pragma once
 
 #include <vector>
-#include "Agent.hpp"
+#include "Swarm/Agent.hpp"
 #include "ImageIO/ImageIOTypes.hpp"
 #include "ImageIO/PixelMatrix.hpp"
 #include "SwarmTypes.hpp"
 #include "GlobalParameters.hpp"
 
+/** Swarm of Agents looking for the best Solution. */
 class Swarm
 {
   public:
@@ -29,12 +30,16 @@ class Swarm
 	void compute(std::chrono::time_point<std::chrono::steady_clock> startTime, int maxMilis = MAX_MILIS);
 
 	[[nodiscard]]
-	std::tuple<Mandelbrot::Complex, double, double, double> findBest() const;
+	Agent findBest() const;
 
 	[[nodiscard]]
 	const std::vector<Agent>& getAgents() const;
 
+	[[nodiscard]]
+	Agent getBestAgent() const;
+
   private:
+
 	std::vector<Agent> agents {};
 
 	int widthControlPointsCount {};
@@ -45,7 +50,7 @@ class Swarm
 
 	ValidationGrid validationGrid {};
 
-	Mandelbrot::Complex globalBest {};
+	Mandelbrot::Complex globalBestPosition {};
 
 	double bestAccuracy {};
 
@@ -61,7 +66,7 @@ class Swarm
 
 	double globalBestHeight {};
 
-	bool optimizeLoop = OPTIMIZE_LOOP;
+	Agent bestAgent {};
 
 	std::vector<std::pair<int, double>> iterationTiers =
 	{

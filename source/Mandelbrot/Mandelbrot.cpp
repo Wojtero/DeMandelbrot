@@ -1,10 +1,6 @@
-#include "../include/Mandelbrot.hpp"
+#include "Mandelbrot/Mandelbrot.hpp"
 
-#include <future>
-#include <algorithm>
-#include <numeric>
 #include <iterator>
-#include <iostream>
 #include <execution>
 
 namespace Mandelbrot
@@ -47,7 +43,7 @@ namespace Mandelbrot
 			createScaler(0, width, reMin, reMax),
 			createScaler(0, height, imMin, imMax));
 		auto iToXY = [=](int i) { return scale(i % width, i / width); };
-		auto toIterationCount = [=](int i, int maxIterations = 255)
+		auto toIterationCount = [=](int i, int maxIterations)
 			{ return calculateMandelbrotIterations(iToXY(i), maxIterations); };
 
 		std::vector<int> vec (width * height);
@@ -55,11 +51,14 @@ namespace Mandelbrot
 
 		std::for_each(std::execution::par, std::begin(vec), std::end(vec), [&](int num)
 		{
-			const int maxIterations = 100;
+			const int maxIterations = MAX_ITERATIONS;
 			int iterationCount = toIterationCount(num, maxIterations);
-			Byte scaledCount = Byte((float(iterationCount)/float(maxIterations)) * 255.f);
+
+			Byte scaledCount = Byte((float(iterationCount) / float(maxIterations))
+				* float(std::numeric_limits<Byte>::max()));
+
 			pixelMatrix.at(num % width, num / width)
-				= Byte(255) - scaledCount;
+				= std::numeric_limits<Byte>::max() - scaledCount;
 		});
 
 		return pixelMatrix;
@@ -69,6 +68,6 @@ namespace Mandelbrot
 	{
 		return std::numeric_limits<ImageIO::Byte>::max()
 			- (ImageIO::Byte((float(calculateMandelbrotIterations(complex, maxIterations))
-			/ float(maxIterations)) * 255.f));
+			/ float(maxIterations)) * float(std::numeric_limits<ImageIO::Byte>::max())));
 	}
 }

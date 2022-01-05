@@ -5,8 +5,8 @@
 #include <fstream>
 #include <execution>
 #include <iomanip>
-#include "Mandelbrot.hpp"
-#include "Agent.hpp"
+#include "Mandelbrot/Mandelbrot.hpp"
+#include "Swarm/Agent.hpp"
 
 namespace ImageIO
 {
@@ -52,9 +52,10 @@ namespace ImageIO
 		return grayImage;
 	}
 
-	void saveMandelbrot(std::string_view pathToImage, double reMin, double imMin, double reMax, double imMax)
+	void saveMandelbrot(std::string_view pathToImage, const Bounds& bounds)
 	{
-		auto mandelbrot = Mandelbrot::createMandelbrotImage(reMin, imMin, reMax, imMax);
+		auto mandelbrot = Mandelbrot::createMandelbrotImage(bounds.reMin, bounds.imMin,
+			bounds.reMax, bounds.imMax);
 		saveImage(mandelbrot.toImage(), pathToImage);
 	}
 
@@ -81,6 +82,6 @@ namespace ImageIO
 
 	std::string filenameNoExtension(std::optional<std::filesystem::path> file)
 	{
-		return file->filename().string().substr(0, file->filename().string().find_last_of("."));
+		return file->filename().string().substr(0, file->filename().string().find_last_of('.'));
 	}
 }
