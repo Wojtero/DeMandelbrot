@@ -1,6 +1,6 @@
 #pragma once
 
-constexpr const int AGENT_COUNT = 100;
+constexpr const int AGENT_COUNT = 400;
 constexpr const int WIDTH_CONTROL_POINTS_COUNT = 33;
 constexpr const int HEIGHT_CONTROL_POINTS_COUNT = 33;
 

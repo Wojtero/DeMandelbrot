@@ -35,7 +35,6 @@ int main(int argc, char* argv[])
 	const auto& solution = swarm.getBestAgent().getSolution();
 
 #ifdef DEVELOPMENT
-	swarm.print();
 	printSolution(solution, time);
 	saveMandelbrot("../output/" + filenameNoExtension(file) + ".png",
 		{solution.reMin(), solution.imMin(), solution.reMax(), solution.imMax()});

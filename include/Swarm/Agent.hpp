@@ -53,6 +53,8 @@ class Agent
 
 	void randomize(const Bounds& bounds, GeneratorHelper& generatorHelper, int maxDivisor = MAX_DIVISOR);
 
+	void inGrid(Mandelbrot::Complex position, double width, double height, GeneratorHelper& generatorHelper);
+
 	[[nodiscard]]
 	const Solution& getSolution() const;
 

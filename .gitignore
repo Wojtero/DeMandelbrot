@@ -37,3 +37,4 @@ output
 test
 .idea
 cmake-build-debug
+cmake-build-release
