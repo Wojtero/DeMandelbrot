@@ -84,15 +84,15 @@ std::vector<Mandelbrot::Complex> Agent::createGrid() const
 {
 	std::vector<Mandelbrot::Complex> grid {};
 
-	const double widthStep = solution.width / static_cast<double>(widthControlPointsCount);
-	const double heightStep = solution.height / static_cast<double>(heightControlPointsCount);
+	const double widthStep = solution.width / static_cast<double>(widthControlPointsCount+1);
+	const double heightStep = solution.height / static_cast<double>(heightControlPointsCount+1);
 
 	const double reMin = solution.reMin();
 	const double imMin = solution.imMin();
 
-	for (int i = 0; i < widthControlPointsCount; ++i)
+	for (int i = 1; i < widthControlPointsCount+1; ++i)
 	{
-		for (int j = 0; j < heightControlPointsCount; ++j)
+		for (int j = 1; j < heightControlPointsCount+1; ++j)
 		{
 			grid.emplace_back(reMin + double(i) * widthStep, imMin + double(j) * heightStep);
 		}
@@ -109,6 +109,13 @@ void Agent::randomize(const Bounds& bounds, GeneratorHelper& generatorHelper, in
 		bounds.reMax - (solution.width/2.0)),
 		generatorHelper.randomDoubleBetween(bounds.imMin + (solution.height/2.0),
 			bounds.imMax - (solution.height/2.0))};
+}
+
+void Agent::inGrid(Mandelbrot::Complex position, double width, double height, GeneratorHelper& generatorHelper)
+{
+	solution.width = width * generatorHelper.randomDoubleBetween(0.0, 1.0);
+	solution.height = height * generatorHelper.randomDoubleBetween(0.0, 1.0);
+	solution.center = position;
 }
 
 void Agent::update(GeneratorHelper& generatorHelper, Mandelbrot::Complex globalBest, double inertia, double cognitive,

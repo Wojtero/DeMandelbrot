@@ -18,12 +18,48 @@ Swarm::Swarm(int agentCount, int widthControlPointsCount, int heightControlPoint
 	}
 }
 
+Swarm::Swarm(std::pair<int, int> agentsInWidthAndHeight, int widthControlPointsCount, int heightControlPointsCount,
+const ImageIO::PixelMatrix& pixelMatrix)
+	: agents(agentsInWidthAndHeight.first * agentsInWidthAndHeight.second,
+		Agent{Solution{}, widthControlPointsCount, heightControlPointsCount}),
+	  widthControlPointsCount{widthControlPointsCount}, heightControlPointsCount{heightControlPointsCount}
+{
+	assert(agentsInWidthAndHeight.first >= 0 && agentsInWidthAndHeight.second >= 0);
+
+	initializeValidationGrid(pixelMatrix);
+
+	agentsInGrid(agentsInWidthAndHeight.first, agentsInWidthAndHeight.second);
+}
+
 void Swarm::randomizeAgents()
 {
 	for (auto& agent : agents)
 	{
 		GeneratorHelper generatorHelper {};
 		agent.randomize(bounds, generatorHelper);
+	}
+}
+
+void Swarm::agentsInGrid(int inWidth, int inHeight)
+{
+	const double widthStep = (bounds.reMax - bounds.reMin) / static_cast<double>(inWidth+1);
+	const double heightStep = (bounds.imMax - bounds.imMin) / static_cast<double>(inHeight+1);
+
+	const double reMin = bounds.reMin;
+	const double imMin = bounds.imMin;
+
+	GeneratorHelper generatorHelper {};
+
+	int index = 0;
+	for (int i = 1; i < inWidth+1; ++i)
+	{
+		for (int j = 1; j < inHeight+1; ++j)
+		{
+			agents.at(index).inGrid({reMin + double(i) * widthStep,
+					imMin + double(j) * heightStep},
+				widthStep, heightStep, generatorHelper);
+			++index;
+		}
 	}
 }
 
@@ -52,12 +88,12 @@ void Swarm::update()
 
 void Swarm::initializeValidationGrid(const ImageIO::PixelMatrix& pixelMatrix)
 {
-	const int widthStep = pixelMatrix.getWidth() / widthControlPointsCount;
-	const int heightStep = pixelMatrix.getHeight() / heightControlPointsCount;
+	const int widthStep = pixelMatrix.getWidth() / (widthControlPointsCount+1);
+	const int heightStep = pixelMatrix.getHeight() / (heightControlPointsCount+1);
 
-	for (int i = 0; i < widthControlPointsCount; ++i)
+	for (int i = 1; i < widthControlPointsCount+1; ++i)
 	{
-		for (int j = 0; j < heightControlPointsCount; ++j)
+		for (int j = 1; j < heightControlPointsCount+1; ++j)
 		{
 			validationGrid.emplace_back(pixelMatrix.at(i*widthStep, j*heightStep));
 		}

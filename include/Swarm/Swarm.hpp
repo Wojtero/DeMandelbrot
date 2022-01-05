@@ -15,7 +15,12 @@ class Swarm
 	Swarm(int agentCount, int widthControlPointsCount, int heightControlPointsCount,
 		const ImageIO::PixelMatrix& pixelMatrix, bool shouldRandomizeAgents = true);
 
+	Swarm(std::pair<int, int> agentsInWidthAndHeight, int widthControlPointsCount, int heightControlPointsCount,
+		const ImageIO::PixelMatrix& pixelMatrix);
+
 	void randomizeAgents();
+
+	void agentsInGrid(int inWidth, int inHeight);
 
 	void update();
 
