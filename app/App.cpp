@@ -5,9 +5,7 @@
 #include "Swarm/Swarm.hpp"
 #include "GlobalParameters.hpp"
 
-#define DEVELOPMENT
-
-const std::filesystem::path pathToOutput = "../output/";
+//#define DEVELOPMENT
 
 int main(int argc, char* argv[])
 {
@@ -34,13 +32,14 @@ int main(int argc, char* argv[])
 	    (timeEnd - timeStart).count());
 	const auto& solution = swarm.getBestAgent().getSolution();
 
+	saveText(filenameNoExtension(file) + ".txt", solution, time);
+
 #ifdef DEVELOPMENT
+	const std::filesystem::path pathToOutput = "../output/";
 	printSolution(solution, time);
 	saveMandelbrot("../output/" + filenameNoExtension(file) + ".png",
 		{solution.reMin(), solution.imMin(), solution.reMax(), solution.imMax()});
 #endif
-
-	saveText(filenameNoExtension(file) + ".txt", solution, time);
 
 	return 0;
 }

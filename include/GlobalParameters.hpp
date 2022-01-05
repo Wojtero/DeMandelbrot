@@ -8,7 +8,7 @@ constexpr const double INERTIA = 1.0;
 constexpr const double COGNITIVE = 1.0;
 constexpr const double SOCIAL = 1.0;
 
-constexpr const int MAX_MILIS = 9500;
+constexpr const int MAX_MILIS = 9000;
 
 constexpr const double TOLERANCE = 0.1;
 constexpr const int MAX_DIVISOR = 16;
