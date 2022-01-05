@@ -26,16 +26,6 @@ namespace ImageIO
 		return pixels.at(x + width * y);
 	}
 
-	Byte PixelMatrix::atSafe(int x, int y, Byte alternative) const
-	{
-		if ((x < 0 || width-1 < x) || (y < 0 || height-1 < y))
-		{
-			return alternative;
-		}
-
-		return pixels.at(x + width * y);
-	}
-
 	int PixelMatrix::getWidth() const
 	{
 		return width;
@@ -78,57 +68,13 @@ namespace ImageIO
 		return out;
 	}
 
-	PixelMatrix PixelMatrix::getEdgeGradient(const PixelMatrix& horizontal, const PixelMatrix& vertical)
-	{
-		assert(horizontal.width == vertical.width && horizontal.height == vertical.height);
-
-		PixelMatrix output (horizontal.width, horizontal.height);
-
-		const auto width = horizontal.width;
-		const auto height = horizontal.height;
-
-		for (int i = 0; i < width; ++i)
-		{
-			for (int j = 0; j < height; ++j)
-			{
-				const auto gX = static_cast<float>(horizontal.at(i, j));
-				const auto gY = static_cast<float>(vertical.at(i, j));
-				output.at(i, j) = static_cast<Byte>(std::sqrt(gX*gX + gY*gY));
-			}
-		}
-
-		return output;
-	}
-
-	PixelMatrix PixelMatrix::getAngle(const PixelMatrix& horizontal, const PixelMatrix& vertical)
-	{
-		assert(horizontal.width == vertical.width && horizontal.height == vertical.height);
-
-		PixelMatrix output (horizontal.width, horizontal.height);
-
-		const auto width = horizontal.width;
-		const auto height = horizontal.height;
-
-		for (int i = 0; i < width; ++i)
-		{
-			for (int j = 0; j < height; ++j)
-			{
-				const auto gX = static_cast<float>(horizontal.at(i, j));
-				const auto gY = static_cast<float>(vertical.at(i, j));
-				output.at(i, j) = static_cast<Byte>(std::atan(gX / gY));
-			}
-		}
-
-		return output;
-	}
-
 	void PixelMatrix::binarize()
 	{
 		std::for_each(std::execution::par, std::begin(pixels), std::end(pixels),
 			[](auto& byte)
 		{
-			const auto middle = 255/2;
-			byte = byte > middle ? 255 : 0;
+			const auto middle = std::numeric_limits<Byte>::max()/2;
+			byte = byte > middle ? std::numeric_limits<Byte>::max() : 0;
 		});
 	}
 }

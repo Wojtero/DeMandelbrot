@@ -1,4 +1,4 @@
-#include "Agent.hpp"
+#include "Swarm/Agent.hpp"
 #include "ImageIO/ImageIOTypes.hpp"
 
 double Solution::reMin() const
@@ -21,15 +21,21 @@ double Solution::imMax() const
 	return center.imag() + (height/2.0);
 }
 
+std::string Solution::stringSolution() const
+{
+	return "{ReMin: " + std::to_string(reMin()) + " ImMin: " + std::to_string(imMin()) + " ReMax: "
+		+ std::to_string(reMax()) + " ImMax: " + std::to_string(imMax()) + '}';
+}
+
 std::ostream& operator<<(std::ostream& os, const Solution& solution)
 {
 	os << "{center: " << solution.center << " width: " << solution.width << " height: " << solution.height << '}';
 	return os;
 }
 
-Agent::Agent(Solution solution,  int widthControlPointsCount, int heightControlPointsCount)
+Agent::Agent(Solution solution, int widthControlPointsCount, int heightControlPointsCount)
 	: solution{solution}, widthControlPointsCount{widthControlPointsCount},
-	  heightControlPointsCount{heightControlPointsCount}, personalBest{solution.center},
+	  heightControlPointsCount{heightControlPointsCount}, personalBestPosition{solution.center},
 	  personalBestWidth{solution.width}, personalBestHeight{solution.height} {}
 
 double Agent::calculateAccuracy(const ValidationGrid& validationGrid, double tolerance)
@@ -43,25 +49,30 @@ double Agent::calculateAccuracy(const ValidationGrid& validationGrid, double tol
 
 	for (int i = 0; i < pointsCount; ++i)
 	{
-		const auto result = Mandelbrot::createMandelbrotPixel(grid.at(i), 80);
+		const auto result = Mandelbrot::createMandelbrotPixel(grid.at(i),
+			MAX_ITERATIONS);
 		const auto expected = validationGrid.at(i);
-		const double error = std::abs(double(result) - double(expected)) / double(std::numeric_limits<ImageIO::Byte>::max());
+		const double error = std::abs(double(result) - double(expected))
+			/ double(std::numeric_limits<ImageIO::Byte>::max());
+
 		if (error < tolerance)
 		{
 			++correctCount;
 		}
 	}
 
-	lastAccuracy = double(correctCount) / double(pointsCount);
-	if (lastAccuracy > bestAccuracy)
+	double accuracy = double(correctCount) / double(pointsCount);
+	lastAccuracy = accuracy;
+
+	if (accuracy > bestAccuracy)
 	{
-		bestAccuracy = lastAccuracy;
-		personalBest = solution.center;
+		bestAccuracy = accuracy;
+		personalBestPosition = solution.center;
 		personalBestWidth = solution.width;
 		personalBestHeight = solution.height;
 	}
 
-	return double(correctCount) / double(pointsCount);
+	return accuracy;
 }
 
 double Agent::getLastAccuracy() const
@@ -83,7 +94,7 @@ std::vector<Mandelbrot::Complex> Agent::createGrid() const
 	{
 		for (int j = 0; j < heightControlPointsCount; ++j)
 		{
-			grid.emplace_back(reMin + double(i)*widthStep, imMin + double(j)*heightStep);
+			grid.emplace_back(reMin + double(i) * widthStep, imMin + double(j) * heightStep);
 		}
 	}
 
@@ -101,27 +112,40 @@ void Agent::randomize(const Bounds& bounds, GeneratorHelper& generatorHelper, in
 }
 
 void Agent::update(GeneratorHelper& generatorHelper, Mandelbrot::Complex globalBest, double inertia, double cognitive,
-	double social, double globalBestWidth, double globalBestHeight)
+	double social, double globalBestWidth, double globalBestHeight, const ValidationGrid& validationGrid)
 {
 	velocity = inertia * velocity
-		+ generatorHelper.randomDoubleBetween(0.0, 1.0) * cognitive * (personalBest - solution.center)
-		+ generatorHelper.randomDoubleBetween(0.0, 1.0) * social * (globalBest - solution.center);
+		+ generatorHelper.randomDoubleBetween(0.0, 1.0)
+			* cognitive * (personalBestPosition - solution.center)
+		+ generatorHelper.randomDoubleBetween(0.0, 1.0)
+		* social * (globalBest - solution.center);
 	solution.center += velocity;
 
 	widthVelocity = inertia * widthVelocity
-		+ generatorHelper.randomDoubleBetween(0.0, 1.0) * cognitive * (personalBestWidth - solution.width)
-		+ generatorHelper.randomDoubleBetween(0.0, 1.0) * social * (globalBestWidth - solution.width);
+		+ generatorHelper.randomDoubleBetween(0.0, 1.0)
+			* cognitive * (personalBestWidth - solution.width)
+		+ generatorHelper.randomDoubleBetween(0.0, 1.0)
+			* social * (globalBestWidth - solution.width);
 	solution.width += widthVelocity;
 
 	heightVelocity = inertia * heightVelocity
-		+ generatorHelper.randomDoubleBetween(0.0, 1.0) * cognitive * (personalBestHeight - solution.height)
-		+ generatorHelper.randomDoubleBetween(0.0, 1.0) * social * (globalBestHeight - solution.height);
+		+ generatorHelper.randomDoubleBetween(0.0, 1.0)
+			* cognitive * (personalBestHeight - solution.height)
+		+ generatorHelper.randomDoubleBetween(0.0, 1.0)
+			* social * (globalBestHeight - solution.height);
 	solution.height += heightVelocity;
+
+	calculateAccuracy(validationGrid);
 }
 
 const Solution& Agent::getSolution() const
 {
 	return solution;
+}
+
+std::string Agent::stringAgent() const
+{
+	return "(" + std::to_string(lastAccuracy * 100.0) + "%) " + solution.stringSolution();
 }
 
 std::ostream& operator<<(std::ostream& os, const Agent& agent)

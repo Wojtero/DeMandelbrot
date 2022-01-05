@@ -1,4 +1,4 @@
-#include "GeneratorHelper.hpp"
+#include "Swarm/GeneratorHelper.hpp"
 #include <string>
 
 auto GeneratorHelper::randomNumbers(int length) -> std::string

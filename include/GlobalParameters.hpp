@@ -15,4 +15,6 @@ constexpr const int MAX_DIVISOR = 16;
 
 constexpr const bool OPTIMIZE_LOOP = false;
 
+constexpr const int MAX_ITERATIONS = 80;
 
+constexpr const double ACCURACY_THRESHOLD = 0.9;

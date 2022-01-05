@@ -6,6 +6,7 @@
 #include "ImageIOTypes.hpp"
 #include <optional>
 #include <filesystem>
+#include "Swarm/SwarmTypes.hpp"
 
 struct Solution;
 
@@ -17,7 +18,7 @@ namespace ImageIO
 
 	Image toGrayscale(const Image& image);
 
-	void saveMandelbrot(std::string_view pathToImage, double reMin, double imMin, double reMax, double imMax);
+	void saveMandelbrot(std::string_view pathToImage, const Bounds& bounds);
 
 	void printSolution(const Solution& solution, int time);
 
